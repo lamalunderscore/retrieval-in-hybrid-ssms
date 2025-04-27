@@ -1,0 +1,3 @@
+[submodule "recurrentgemma"]
+	path = recurrentgemma
+	url = git@github.com:stevenabreu7/recurrentgemma.git
