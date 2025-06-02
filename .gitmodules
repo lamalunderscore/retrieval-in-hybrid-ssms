@@ -1,3 +1,8 @@
+[submodule "NIAH"]
+	path = NIAH
+	url = git@github.com:z4nix/Longalign.git
+	branch = main
 [submodule "recurrentgemma"]
 	path = recurrentgemma
-	url = git@github.com:stevenabreu7/recurrentgemma.git
+	url = https://github.com/stevenabreu7/recurrentgemma.git
+	branch = dejavu
