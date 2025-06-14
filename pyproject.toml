@@ -1,10 +1,11 @@
 [project]
-name = "retrieval-in-hybrid-ssms"
+name = "hybrid-interpretability"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "accelerate>=1.7.0",
     "anthropic>=0.50.0",
     "dotenv>=0.9.9",
     "jupyter>=1.1.1",
@@ -14,26 +15,27 @@ dependencies = [
     "pandas>=2.2.3",
     "pyyaml>=6.0.2",
     "recurrentgemma",
+    "jamba",
     "seaborn>=0.13.2",
     "sentencepiece>=0.2.0",
     "tiktoken>=0.9.0",
     "torch>=2.7.0",
-    "transformers>=4.51.3",
+    "transformers>=4.52.4",
 ]
 
 [tool.uv.sources]
 recurrentgemma = { path = "recurrentgemma", editable = true }
+jamba = { path = "jamba", editable = true }
+
 
 [tool.ruff]
 line-length = 100
-target-version = "py38"
-lint.select = ["E", "F", "I", "N", "W", "D"]
-lint.ignore = ["D203", "D213", "E501", "D107", "D102"]
+target-version = "py310"
+lint.select = ["E", "F", "I", "N", "W", "D", "C"]
+lint.ignore = ["D203", "D213", "E501", "D107", "D102", "N812", "N806"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
-"examples/*" = ["D"]
-"tests/*" = ["D"]
+"**/__init__.py" = ["F401"]
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2

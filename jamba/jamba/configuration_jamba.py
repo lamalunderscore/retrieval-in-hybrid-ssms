@@ -12,20 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Jamba model configuration"""
+"""Jamba model configuration."""
 
 import math
+from typing import Literal
 
-from ...configuration_utils import PretrainedConfig
-from ...utils import logging
+from transformers.configuration_utils import PretrainedConfig
+from transformers.utils import logging
 
 
 logger = logging.get_logger(__name__)
 
 
 class JambaConfig(PretrainedConfig):
-    r"""
-    This is the configuration class to store the configuration of a [`JambaModel`]. It is used to instantiate a
+    r"""configuration class to store the configuration of a [`JambaModel`].
+
+    It is used to instantiate a
     Jamba model according to the specified arguments, defining the model architecture. Instantiating a configuration
     with the defaults will yield a similar configuration to that of the Jamba-v0.1 model.
 
@@ -113,7 +115,7 @@ class JambaConfig(PretrainedConfig):
             The size of the mamba convolution kernel
         mamba_expand (`int`, *optional*, defaults to 2):
             Expanding factor (relative to hidden_size) used to determine the mamba intermediate size
-        mamba_dt_rank (`Union[int,str]`, *optional*, defaults to `"auto"`):
+        mamba_dt_rank (`Union[int,Literal["auto"]]`, *optional*, defaults to `"auto"`):
             Rank of the mamba discretization projection matrix. `"auto"` means that it will default to `math.ceil(self.hidden_size / 16)`
         mamba_conv_bias (`bool`, *optional*, defaults to `True`):
             Flag indicating whether or not to use bias in the convolution layer of the mamba mixer block.
@@ -157,7 +159,7 @@ class JambaConfig(PretrainedConfig):
         mamba_d_state=16,
         mamba_d_conv=4,
         mamba_expand=2,
-        mamba_dt_rank="auto",
+        mamba_dt_rank: int | Literal["auto"] = "auto",
         mamba_conv_bias=True,
         mamba_proj_bias=False,
         **kwargs,
@@ -200,7 +202,9 @@ class JambaConfig(PretrainedConfig):
         self.mamba_d_state = mamba_d_state
         self.mamba_d_conv = mamba_d_conv
         self.mamba_expand = mamba_expand
-        self.mamba_dt_rank = math.ceil(self.hidden_size / 16) if mamba_dt_rank == "auto" else mamba_dt_rank
+        self.mamba_dt_rank: int = (
+            math.ceil(self.hidden_size / 16) if mamba_dt_rank == "auto" else mamba_dt_rank
+        )
         self.mamba_conv_bias = mamba_conv_bias
         self.mamba_proj_bias = mamba_proj_bias
 
