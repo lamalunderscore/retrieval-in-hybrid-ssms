@@ -2,9 +2,6 @@ import os
 import subprocess
 from pathlib import Path
 
-import kagglehub
-import yaml
-
 
 # directory for NIAH scripts
 NIAH_DIR = Path("NIAH/Needle_test")
@@ -22,7 +19,6 @@ def run_command(command):
     """
     env = os.environ.copy()
     print(f"CUDA_VISIBLE_DEVICES before adjustment: {env['CUDA_VISIBLE_DEVICES']}")
-    env["CUDA_VISIBLE_DEVICES"] = "0,1,2,3,4"
 
     # Start the subprocess
     process = subprocess.Popen(
@@ -67,7 +63,6 @@ def run_niah(prompt=True, pred=True, eval=True, vis=True):
     if not os.environ.get("HF_TOKEN") and not os.environ.get("HUGGINGFACE_TOKEN"):
         print("No token found in environment variables, using predefined token...")
         os.environ["HF_TOKEN"] = "your_huggingface_token"
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # Run NIAH scripts
     if prompt:
@@ -96,33 +91,9 @@ def main():
     if not os.environ.get("KAGGLE_KEY") or not os.environ.get("KAGGLE_USERNAME"):
         print("No token found in environment variables, using predefined token...")
         os.environ["HF_TOKEN"] = "your_huggingface_token"
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
-    conf_path = NIAH_DIR / CONF_FILE
-    print(f"conf_path: {conf_path}")
-    with open(conf_path, "r") as f:
-        config = yaml.safe_load(f)
-
-    if config["pred"]["model_type"] == "recurrentgemma":
-        # Download model
-        print("Downloading model...")
-        variant = "2b"  # 2b/9b available
-        model_dir = Path(kagglehub.model_download(f"google/recurrentgemma/PyTorch/{variant}"))
-        model_path = model_dir / f"{variant}.pt"
-        tokenizer_path = model_dir / "tokenizer.model"
-        print(model_path)
-
-        print("Updating config...")
-        # set path in config
-        config["pred"]["model_path"] = str(model_path)
-        config["pred"]["tokenizer_path"] = str(tokenizer_path)
-        dump = yaml.dump(config)
-
-        with open(conf_path, "w") as f:
-            f.write(dump)
 
     # Run NIAH workflow
-    run_niah(prompt=False, pred=True, eval=False, vis=False)
+    run_niah(prompt=True, pred=False, eval=False, vis=False)
 
 
 if __name__ == "__main__":

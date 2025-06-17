@@ -1,6 +1,6 @@
 """Import structure for jamba package."""
 
-from jamba import configuration_jamba, modeling_jamba
+from . import configuration_jamba, modeling_jamba
 
 
 JambaConfig = configuration_jamba.JambaConfig

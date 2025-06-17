@@ -661,6 +661,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyyaml" },
+    { name = "recorder" },
     { name = "recurrentgemma" },
     { name = "seaborn" },
     { name = "sentencepiece" },
@@ -681,6 +682,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26.4" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "recorder", editable = "recorder" },
     { name = "recurrentgemma", editable = "recurrentgemma" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "sentencepiece", specifier = ">=0.2.0" },
@@ -822,6 +824,7 @@ source = { editable = "jamba" }
 dependencies = [
     { name = "einops" },
     { name = "numpy" },
+    { name = "recorder" },
     { name = "torch" },
     { name = "transformers" },
 ]
@@ -830,6 +833,7 @@ dependencies = [
 requires-dist = [
     { name = "einops", specifier = ">=0.7.0,<0.8.0" },
     { name = "numpy", specifier = ">=1.21,<2.0" },
+    { name = "recorder", specifier = ">=0.1.0,<0.2.0" },
     { name = "torch", specifier = ">=2.7.0,<3.0.0" },
     { name = "transformers", specifier = ">=4.52.2,<5.0.0" },
 ]
@@ -2253,6 +2257,17 @@ wheels = [
 ]
 
 [[package]]
+name = "recorder"
+version = "0.1.0"
+source = { editable = "recorder" }
+dependencies = [
+    { name = "torch" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "torch", specifier = ">=2.7.0,<3.0.0" }]
+
+[[package]]
 name = "recurrentgemma"
 version = "0.1.0"
 source = { editable = "recurrentgemma" }
@@ -2274,6 +2289,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.21,<2.0" },
     { name = "orbax-checkpoint", marker = "extra == 'full' or extra == 'jax' or extra == 'test'", specifier = "==0.5.7" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.0.0,<9.0.0" },
+    { name = "recorder", marker = "extra == 'torch'", specifier = ">=0.1.0,<0.2.0" },
     { name = "sentencepiece", specifier = ">=0.2.0,<0.3.0" },
     { name = "torch", marker = "extra == 'full' or extra == 'test' or extra == 'torch'", specifier = ">=2.2.0,<3.0.0" },
 ]
