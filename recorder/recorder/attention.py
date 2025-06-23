@@ -1,6 +1,6 @@
 """Utility functions for dejavu implementation."""
 
-from typing import Any, Literal
+from typing import Literal
 
 import torch
 
@@ -19,7 +19,7 @@ class AttentionRecorder(torch.nn.Module):
         self.name = name
         self.record_mode = record_mode
 
-        self._clear()
+        self._clear("both")
 
         # Map enum to forward methods
         self._forward_methods = {
@@ -28,70 +28,78 @@ class AttentionRecorder(torch.nn.Module):
             "first": self._forward_first,
         }
 
-    def _clear(self):
+    def _clear(self, clear_mode: Literal["gen", "prefill", "both"] = "both"):
         # Initialize data based on mode
-        self.data: list[torch.Tensor | Any] | torch.Tensor | None = None  # "first" and "last"
-        if self.record_mode == "all":
-            self.data = []
+        clear_value = lambda: list() if self.record_mode == "all" else None  # noqa
+        if clear_mode in ["gen", "both"]:
+            self._gen_data = clear_value()
+        if clear_mode in ["prefill", "both"]:
+            self._prefill_data = clear_value()
 
-    def get(self) -> list[torch.Tensor | None] | torch.Tensor | None:
+    def _safe_get(self, some_data) -> list[torch.Tensor | None] | torch.Tensor | None:
+        if isinstance(some_data, list):
+            return [tensor.clone() for tensor in some_data]
+        if isinstance(some_data, torch.Tensor):
+            return some_data.clone()
+        if some_data is None:
+            print(
+                f"Warning: recorder data of layer {self.name} is empty, returning None. (in AttentionRecorder._safe_get)"
+            )
+            return None
+        raise TypeError(
+            f"Expected self._data to be of type list | torch.Tensor | None. Got {type(some_data)} instead."
+        )
+
+    def get_clear(
+        self, get_mode: Literal["gen", "prefill"]
+    ) -> list[torch.Tensor | None] | torch.Tensor | None:
         """Get and clear recorder data.
 
         Raises:
-            TypeError: If self.data is of an unknown type.
+            TypeError: If self._data is of an unknown type.
 
         Returns:
             list[torch.Tensor | None] | torch.Tensor | None: A copy of the stored data.
 
         """
-        if isinstance(self.data, list):
-            return_data = [tensor.clone() for tensor in self.data]
-        elif isinstance(self.data, torch.Tensor):
-            return_data = self.data.clone()
-        elif self.data is None:
-            print(f"Warning, recorder data of layer {self.name} is empty, returning None.")
-            return None
+        assert get_mode in ["gen", "prefill"], "Invalid get_mode."
+        if get_mode == "gen":
+            return_data = self._safe_get(self._gen_data)
         else:
-            raise TypeError(
-                f"Expected self.data to be of type list, torch.Tensor or None. Got {type(self.data)} instead."
-            )
+            return_data = self._safe_get(self._prefill_data)
 
-        # ensure tensors
         if isinstance(return_data, list):
             for tensor in return_data:
                 assert isinstance(tensor, torch.Tensor), "Tensor not of type Tensor."
         else:
-            assert isinstance(return_data, torch.Tensor), "Tensor not of type Tensor."
+            assert isinstance(return_data, torch.Tensor) or (return_data is None), (
+                "Tensor not of type Tensor | None."
+            )
 
+        self._clear(clear_mode=get_mode)
         return return_data
 
     def forward(self, x):
-        """Dispatch to appropriate forward method based on record mode."""
-        self._forward_methods[self.record_mode](x)
-
-    def _forward_all(self, x):
-        """Record all inputs in a list."""
-        assert isinstance(self.data, list) and isinstance(x, torch.Tensor), (
-            f"Need self.data to be `list` and x to be `torch.Tensor`, but got {type(self.data)} and {type(x)}."
-        )
-        print("DEBUG: in recorder._forward_all")
-        self.data.append(x.detach().cpu())
-
-    def _forward_first(self, x):
-        """Record only the first input."""
-        assert isinstance(x, torch.Tensor), f"Need x to be `torch.Tensor`, but got {type(x)}."
-        print("DEBUG: in recorder._forward_first")
-        if self.data is None:
-            print(f"DEBUG: {self.name}.data is None, so save tensor")
-            self.data = x.detach().cpu()
+        if x.shape[2] == 1:
+            attr_name = "_gen_data"
         else:
-            print(f"DEBUG: {self.name}.data is not None, so skip.")
+            attr_name = "_prefill_data"
+        self._forward_methods[self.record_mode](x, attr_name)
 
-    def _forward_last(self, x):
-        """Record only the last input."""
-        print("DEBUG: in recorder._forward_last")
-        assert isinstance(x, torch.Tensor), f"Need x to be `torch.Tensor`, but got {type(x)}."
-        self.data = x.detach().cpu()
+    def _forward_all(self, x, attr_name):
+        """Record all inputs in a list."""
+        self_data = getattr(self, attr_name)
+        assert isinstance(self_data, list) and isinstance(x, torch.Tensor), (
+            f"Need self._data to be `list` and x to be `torch.Tensor`, but got {type(self_data)} and {type(x)}."
+        )
+        self_data.append(x.detach().cpu())
+
+    def _forward_first(self, x, attr_name):
+        if getattr(self, attr_name) is None:
+            setattr(self, attr_name, x.detach().cpu())
+
+    def _forward_last(self, x, attr_name):
+        setattr(self, attr_name, x.detach().cpu())
 
 
 __all__ = ("AttentionRecorder",)

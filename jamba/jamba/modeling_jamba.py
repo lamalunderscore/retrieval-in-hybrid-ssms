@@ -408,7 +408,7 @@ class JambaAttention(nn.Module):
             causal_mask = attention_mask[:, :, :, : key_states.shape[-2]]
             attn_weights = attn_weights + causal_mask
 
-        if self.attention_recorder is not None:
+        if self.attention_recorder is not None and attn_weights.shape[2] == 1:
             self.attention_recorder(attn_weights)
 
         # upcast attention to fp32
