@@ -3,10 +3,10 @@
 from . import attention
 
 
-AttentionRecorder = attention.AttentionRecorder
+TensorRecorder = attention.TensorRecorder
 
 
-__all__ = ("AttentionRecorder",)
+__all__ = ("TensorRecorder",)
 
 # Prevents from accessing anything except the exported symbols
 try:

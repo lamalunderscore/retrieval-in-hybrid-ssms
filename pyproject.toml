@@ -20,8 +20,9 @@ dependencies = [
     "seaborn>=0.13.2",
     "sentencepiece>=0.2.0",
     "tiktoken>=0.9.0",
-    "torch>=2.7.0",
+    "torch~=2.6.0",
     "transformers>=4.52.4",
+    "lm-eval>=0.4.9",
 ]
 
 [tool.uv.sources]

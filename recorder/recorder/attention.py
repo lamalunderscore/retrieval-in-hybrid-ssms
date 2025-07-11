@@ -5,7 +5,7 @@ from typing import Literal
 import torch
 
 
-class AttentionRecorder(torch.nn.Module):
+class TensorRecorder(torch.nn.Module):
     """A class that implements the recording of Tensors, either in a Module, or a Model.
 
     Attributes:
@@ -43,7 +43,7 @@ class AttentionRecorder(torch.nn.Module):
             return some_data.clone()
         if some_data is None:
             print(
-                f"Warning: recorder data of layer {self.name} is empty, returning None. (in AttentionRecorder._safe_get)"
+                f"Warning: recorder data of layer {self.name} is empty, returning None. (in TensorRecorder._safe_get)"
             )
             return None
         raise TypeError(
@@ -102,4 +102,4 @@ class AttentionRecorder(torch.nn.Module):
         setattr(self, attr_name, x.detach().cpu())
 
 
-__all__ = ("AttentionRecorder",)
+__all__ = ("TensorRecorder",)

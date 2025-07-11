@@ -20,8 +20,6 @@ def get_topk(
         metric (str, optional): Metric to measure uniformity. Defaults to "l2".
         do_prefill (bool, optional): If the sparsification should be calculated during the
             prefill stage. Defaults to False.
-        head_mask_recorder (AttentionRecorder, optional):
-            Recorder object to store attention weights.
 
     Raises:
         ValueError: If k is bigger than the number of heads, or k < 0.
@@ -39,8 +37,9 @@ def get_topk(
 
     if not do_prefill and not target_length == 1:
         k = num_heads  # deactivate sparsification
-
+    print(f"k: {k}")
     if k == 0:
+        print("returning topk_ind as None")
         return None
 
     if k > num_heads or k < 0:
@@ -58,7 +57,7 @@ def get_topk(
     assert target_length == target_length_topk, (
         f"Topk sequence length is {target_length_topk}, but expected {target_length} (as in attn_weights)."
     )
-
+    print(f"topk_ind shape: {topk_ind.shape}")
     return topk_ind
 
 
@@ -74,20 +73,28 @@ def keep_topk(attn_output, topk: torch.Tensor | None) -> torch.Tensor:
 
     """
     if topk is None:
+        print("returning early, attn_output * 0")
         return attn_output * 0.0
 
     batch_size, num_heads, target_length, h = attn_output.shape
     batch_size_topk, k, target_length_topk = topk.shape
 
-    assert batch_size_topk == batch_size, "Shape mismatch, topk and attn_output have different batch size."
-    assert target_length_topk == target_length, "Shape mismatch, topk and attn_output have different sequence length."
+    assert batch_size_topk == batch_size, (
+        "Shape mismatch, topk and attn_output have different batch size."
+    )
+    assert target_length_topk == target_length, (
+        "Shape mismatch, topk and attn_output have different sequence length."
+    )
 
     if k == num_heads:
+        print("returning early, attn_output stays same")
         return attn_output
 
     # mask that can be broadcasted onto attn_putput
     # topk already fits dimensions of mask tensor
-    mask = torch.zeros(batch_size, num_heads, target_length, dtype=torch.bool, device=attn_output.device)
+    mask = torch.zeros(
+        batch_size, num_heads, target_length, dtype=torch.bool, device=attn_output.device
+    )
 
     # unmask head indices in topk
     mask.scatter_(
@@ -96,6 +103,7 @@ def keep_topk(attn_output, topk: torch.Tensor | None) -> torch.Tensor:
         src=torch.ones_like(topk, dtype=torch.bool, device=attn_output.device),
     )
     attn_output = attn_output * mask.unsqueeze(dim=-1)
+    print(f"masked attn_output for k={k}")
     return attn_output
 
 
