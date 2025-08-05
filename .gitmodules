@@ -1,8 +1,11 @@
 [submodule "NIAH"]
 	path = NIAH
-	url = git@github.com:z4nix/Longalign.git
+	url = git@git-felix:z4nix/Longalign.git
 	branch = main
 [submodule "recurrentgemma"]
 	path = recurrentgemma
-	url = git@github.com:stevenabreu7/recurrentgemma.git
+	url = git@git-felix:stevenabreu7/recurrentgemma.git
 	branch = dejavu
+[submodule "manipulatte"]
+	path = manipulatte
+	url = https://github.com/lamalunderscore/manipulatte.git

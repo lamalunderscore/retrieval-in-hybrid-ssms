@@ -14,9 +14,7 @@ dependencies = [
     "numpy>=1.26.4",
     "pandas>=2.2.3",
     "pyyaml>=6.0.2",
-    "recurrentgemma",
-    "jamba",
-    "recorder",
+    "manipulatte @ git+https://github.com/lamalunderscore/manipulatte.git",
     "seaborn>=0.13.2",
     "sentencepiece>=0.2.0",
     "tiktoken>=0.9.0",
@@ -24,12 +22,6 @@ dependencies = [
     "transformers>=4.52.4",
     "lm-eval>=0.4.9",
 ]
-
-[tool.uv.sources]
-recurrentgemma = { path = "recurrentgemma", editable = true }
-jamba = { path = "jamba", editable = true }
-recorder = { path = "recorder", editable = true}
-
 
 [tool.ruff]
 line-length = 100
