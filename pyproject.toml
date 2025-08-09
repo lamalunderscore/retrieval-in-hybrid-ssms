@@ -14,14 +14,18 @@ dependencies = [
     "numpy>=1.26.4",
     "pandas>=2.2.3",
     "pyyaml>=6.0.2",
-    "manipulatte @ git+https://github.com/lamalunderscore/manipulatte.git",
     "seaborn>=0.13.2",
     "sentencepiece>=0.2.0",
     "tiktoken>=0.9.0",
     "torch~=2.6.0",
     "transformers>=4.52.4",
     "lm-eval>=0.4.9",
+    "safetensors>=0.5.3",
+    "manipulatte",
 ]
+
+[tool.uv.sources]
+manipulatte = { path = "manipulatte", editable = true}
 
 [tool.ruff]
 line-length = 100

@@ -1,3 +1,5 @@
+"""Script that implements Sparsified testing of Jamba in the LM-Eval Harness."""
+
 import pickle
 from argparse import ArgumentParser
 from pathlib import Path
@@ -5,7 +7,7 @@ from pathlib import Path
 from lm_eval import simple_evaluate
 from lm_eval.models.huggingface import HFLM
 
-from NIAH.Needle_test.utils import BackEnd, load_model
+from manipulatte import BackEnd, load_model
 
 
 parser = ArgumentParser()
@@ -43,7 +45,6 @@ if __name__ == "__main__":
             fewshot_as_multiturn=True,
         )
         print("eval done")
-
         print(results)
 
         save_dir = Path("lm_eval_results")

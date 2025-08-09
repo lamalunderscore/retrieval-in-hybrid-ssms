@@ -966,6 +966,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyyaml" },
+    { name = "safetensors" },
     { name = "seaborn" },
     { name = "sentencepiece" },
     { name = "tiktoken" },
@@ -981,11 +982,12 @@ requires-dist = [
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "kagglehub", specifier = ">=0.3.12" },
     { name = "lm-eval", specifier = ">=0.4.9" },
-    { name = "manipulatte", git = "https://github.com/lamalunderscore/manipulatte.git" },
+    { name = "manipulatte", editable = "manipulatte" },
     { name = "matplotlib", specifier = ">=3.10.1" },
     { name = "numpy", specifier = ">=1.26.4" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "safetensors", specifier = ">=0.5.3" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "sentencepiece", specifier = ">=0.2.0" },
     { name = "tiktoken", specifier = ">=0.9.0" },
@@ -1122,13 +1124,22 @@ wheels = [
 [[package]]
 name = "jamba"
 version = "0.1.0"
-source = { git = "https://github.com/lamalunderscore/manipulatte.git?subdirectory=jamba#307da3faf8d641f3284b64f716743fbe06f420a7" }
+source = { editable = "manipulatte/jamba" }
 dependencies = [
     { name = "einops" },
     { name = "numpy" },
     { name = "recorder" },
     { name = "torch" },
     { name = "transformers" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "einops", specifier = ">=0.7.0,<0.8.0" },
+    { name = "numpy", specifier = ">=1.21,<2.0" },
+    { name = "recorder", specifier = ">=0.1.0,<0.2.0" },
+    { name = "torch", specifier = ">=2.6.0,<3.0.0" },
+    { name = "transformers", specifier = ">=4.52.2,<5.0.0" },
 ]
 
 [[package]]
@@ -1715,7 +1726,7 @@ wheels = [
 [[package]]
 name = "manipulatte"
 version = "0.1.0"
-source = { git = "https://github.com/lamalunderscore/manipulatte.git#307da3faf8d641f3284b64f716743fbe06f420a7" }
+source = { editable = "manipulatte" }
 dependencies = [
     { name = "accelerate" },
     { name = "jamba" },
@@ -1727,6 +1738,20 @@ dependencies = [
     { name = "setuptools" },
     { name = "torch" },
     { name = "transformers" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "accelerate", specifier = ">=1.0.1" },
+    { name = "jamba", editable = "manipulatte/jamba" },
+    { name = "kagglehub", specifier = ">=0.3.12" },
+    { name = "recorder", editable = "manipulatte/recorder" },
+    { name = "recurrentgemma", editable = "manipulatte/recurrentgemma" },
+    { name = "safetensors", specifier = ">=0.3.0" },
+    { name = "sentencepiece", specifier = ">=0.2.0" },
+    { name = "setuptools", specifier = ">=75.3.2" },
+    { name = "torch", specifier = ">=1.10.0" },
+    { name = "transformers", specifier = ">=4.39.0" },
 ]
 
 [[package]]
@@ -3087,15 +3112,18 @@ wheels = [
 [[package]]
 name = "recorder"
 version = "0.1.0"
-source = { git = "https://github.com/lamalunderscore/manipulatte.git?subdirectory=recorder#307da3faf8d641f3284b64f716743fbe06f420a7" }
+source = { editable = "manipulatte/recorder" }
 dependencies = [
     { name = "torch" },
 ]
 
+[package.metadata]
+requires-dist = [{ name = "torch", specifier = ">=2.6.0,<3.0.0" }]
+
 [[package]]
 name = "recurrentgemma"
 version = "0.1.0"
-source = { git = "https://github.com/lamalunderscore/manipulatte.git?subdirectory=recurrentgemma#307da3faf8d641f3284b64f716743fbe06f420a7" }
+source = { editable = "manipulatte/recurrentgemma" }
 dependencies = [
     { name = "absl-py" },
     { name = "einops" },
@@ -3103,6 +3131,22 @@ dependencies = [
     { name = "numpy" },
     { name = "sentencepiece" },
 ]
+
+[package.metadata]
+requires-dist = [
+    { name = "absl-py", specifier = ">=1.4.0,<1.5.0" },
+    { name = "einops", specifier = ">=0.7.0,<0.8.0" },
+    { name = "flax", marker = "extra == 'full' or extra == 'jax' or extra == 'test'", specifier = ">=0.8.2,<0.9.0" },
+    { name = "jax", marker = "extra == 'full' or extra == 'jax' or extra == 'test'", specifier = ">=0.4.23,<0.5.0" },
+    { name = "jaxtyping", specifier = ">=0.2.28,<0.3.0" },
+    { name = "numpy", specifier = ">=1.21,<2.0" },
+    { name = "orbax-checkpoint", marker = "extra == 'full' or extra == 'jax' or extra == 'test'", specifier = "==0.5.7" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8.0.0,<9.0.0" },
+    { name = "recorder", marker = "extra == 'torch'", specifier = ">=0.1.0,<0.2.0" },
+    { name = "sentencepiece", specifier = ">=0.2.0,<0.3.0" },
+    { name = "torch", marker = "extra == 'full' or extra == 'test' or extra == 'torch'", specifier = ">=2.2.0,<3.0.0" },
+]
+provides-extras = ["full", "jax", "test", "torch"]
 
 [[package]]
 name = "referencing"
