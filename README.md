@@ -1,2 +1,2 @@
 # retrieval-in-hybrid-ssms
-A repository that is housing all code for my bachelos thesis, investigating the retrieval mechanisms in hybrid SSMs
+A repository that houses all code for my bachelor thesis, investigating the retrieval mechanism in hybrid SSMs
